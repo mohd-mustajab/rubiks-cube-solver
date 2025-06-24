@@ -1,9 +1,5 @@
-// Basic Rubik's Cube solver (non-optimal, basic functional prototype)
-// Built in JavaScript using Object-Oriented Programming
-
 class RubiksCube {
   constructor() {
-    // Order: U (up), D (down), F (front), B (back), L (left), R (right)
     this.faces = {
       U: Array(9).fill('w'),
       D: Array(9).fill('y'),
@@ -28,14 +24,11 @@ class RubiksCube {
     }
   }
 
-  // Rotate front face and manipulate sides (simplified demo)
   move(moveName) {
     const clockwise = !moveName.includes("'");
     const face = moveName.replace("'", "");
-
     this.rotateFace(face, clockwise);
 
-    // Example: Only implement F and F' moves to keep code short
     if (face === 'F') {
       const { U, R, D, L } = this.faces;
       const temp = [U[6], U[7], U[8]];
@@ -53,8 +46,8 @@ class RubiksCube {
     }
   }
 
-  scramble(moves = 20) {
-    const allMoves = ['F', "F'", 'U', "U'", 'R', "R'", 'L', "L'", 'D', "D'", 'B', "B'"];
+  scramble(moves = 5) {
+    const allMoves = ['F', "F'"];
     const history = [];
     for (let i = 0; i < moves; i++) {
       const move = allMoves[Math.floor(Math.random() * allMoves.length)];
@@ -70,32 +63,32 @@ class RubiksCube {
 
   solve() {
     const steps = [];
-    // Naive solver: reverse the scramble (this is NOT a real solving algo)
-    // Just a placeholder to show step-by-step idea
     const scrambleMoves = this.scramble(5);
-    console.log("Scramble:", scrambleMoves);
-    steps.push({ move: 'scramble', state: this.getCubeStateString() });
+    steps.push({ move: 'Scramble: ' + scrambleMoves.join(' '), state: this.getCubeStateString() });
 
     for (let i = scrambleMoves.length - 1; i >= 0; i--) {
       const move = scrambleMoves[i];
       const reverseMove = move.includes("'") ? move.replace("'", '') : move + "'";
       this.move(reverseMove);
-      steps.push({ move: reverseMove, state: this.getCubeStateString() });
+      steps.push({ move: 'Undo: ' + reverseMove, state: this.getCubeStateString() });
     }
 
     return steps;
   }
 }
 
-function getCubeSvg(cubeString) {
-  // Placeholder for rendering method
-  console.log('Rendering cube:', cubeString);
+function displaySteps(steps) {
+  const output = document.getElementById('output');
+  output.innerHTML = '';
+  steps.forEach((step, index) => {
+    const div = document.createElement('div');
+    div.className = 'step';
+    div.innerHTML = `<strong>Step ${index + 1}:</strong> ${step.move}<br><span class="cube-state">${step.state}</span>`;
+    output.appendChild(div);
+  });
 }
 
-// Usage:
+// Run the program
 const cube = new RubiksCube();
-const solvingSteps = cube.solve();
-solvingSteps.forEach(step => {
-  console.log("Move:", step.move);
-  getCubeSvg(step.state);
-});
+const steps = cube.solve();
+displaySteps(steps);
