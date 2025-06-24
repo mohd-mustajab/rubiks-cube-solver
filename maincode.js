@@ -9,7 +9,6 @@ class RubiksCube {
       R: Array(9).fill('r')
     };
   }
-
   rotateFace(face, clockwise = true) {
     const f = this.faces[face];
     const copy = f.slice();
@@ -23,7 +22,6 @@ class RubiksCube {
       f[6] = copy[0]; f[7] = copy[3]; f[8] = copy[6];
     }
   }
-
   move(moveName) {
     const clockwise = !moveName.includes("'");
     const face = moveName.replace("'", "");
@@ -56,7 +54,6 @@ class RubiksCube {
     }
     return history;
   }
-
   getCubeStateString() {
     return Object.values(this.faces).map(face => face.join('')).join('');
   }
@@ -87,8 +84,6 @@ function displaySteps(steps) {
     output.appendChild(div);
   });
 }
-
-// Run the program
 const cube = new RubiksCube();
 const steps = cube.solve();
 displaySteps(steps);
